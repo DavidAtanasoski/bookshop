@@ -48,7 +48,7 @@ namespace bookshop.Controllers
         // GET: Reviews/Create
         public IActionResult Create()
         {
-            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id");
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Title");
             return View();
         }
 
