@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using bookshop.Data;
 using bookshop.Models;
+using bookshop.ViewModels;
+using System.Linq.Expressions;
 
 namespace bookshop.Controllers
 {
@@ -20,11 +22,37 @@ namespace bookshop.Controllers
         }
 
         // GET: Authors
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string authorNationality, string searchFirstName, string searchLastName)
         {
-              return _context.Author != null ? 
-                          View(await _context.Author.ToListAsync()) :
-                          Problem("Entity set 'bookshopContext.Author'  is null.");
+            IQueryable<Author> authors = _context.Author.AsQueryable();
+            IQueryable<string> nationalityQuery = _context.Author.OrderBy(x => x.Nationality).Select(x => x.Nationality).Distinct()!;
+
+            if(!string.IsNullOrEmpty(searchFirstName))
+            {
+                authors = authors.Where(x => x.FirstName.Contains(searchFirstName));
+            }
+
+            if (!string.IsNullOrEmpty(searchLastName))
+            {
+                authors = authors.Where(x => x.LastName.Contains(searchLastName));
+            }
+
+            if (!string.IsNullOrEmpty(authorNationality))
+            {
+                authors = authors.Where(x => x.Nationality == authorNationality);
+            }
+
+            var authorFilterVM = new AuthorFilterViewModel
+            {
+                Authors = await authors.ToListAsync(),
+                Nationalities = new SelectList(await nationalityQuery.ToListAsync())
+            };
+
+            return View(authorFilterVM);
+
+            //return _context.Author != null ?
+            //            View(await _context.Author.ToListAsync()) :
+            //            Problem("Entity set 'bookshopContext.Author'  is null.");
         }
 
         // GET: Authors/Details/5
@@ -36,7 +64,9 @@ namespace bookshop.Controllers
             }
 
             var author = await _context.Author
+                .Include(x => x.Books)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (author == null)
             {
                 return NotFound();

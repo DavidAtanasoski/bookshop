@@ -1,4 +1,4 @@
-﻿@model IEnumerable<bookshop.Models.Author>
+﻿@model bookshop.ViewModels.AuthorFilterViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -9,35 +9,49 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-controller="Authors" asp-action="Index" method="get">
+    <p>
+        <select asp-for="AuthorNationality" asp-items="Model.Nationalities">
+            <option value="">All</option>
+        </select>
+        First Name: <input type="text" asp-for="SearchFirstName" />
+        Last Name: <input type="text" asp-for="SearchLastName" />
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                @Html.DisplayNameFor(model => model.Authors[0].FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                @Html.DisplayNameFor(model => model.Authors[0].LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BirthDate)
+                @Html.DisplayNameFor(model => model.Authors[0].BirthDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Nationality)
+                @Html.DisplayNameFor(model => model.Authors[0].Nationality)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Gender)
+                @Html.DisplayNameFor(model => model.Authors[0].Gender)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Authors) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
+                    <a href="@Url.Action("Details", "Authors", new { id = item.Id })">@Html.DisplayFor(modelItem => item.FirstName)</a>
+                @*@Html.DisplayFor(modelItem => item.FirstName)*@
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.LastName)
+                    <a href="@Url.Action("Details", "Authors", new { id = item.Id })">@Html.DisplayFor(modelItem => item.LastName)</a>
+                @*@Html.DisplayFor(modelItem => item.LastName)*@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.BirthDate)
