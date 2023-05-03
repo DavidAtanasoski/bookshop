@@ -9,7 +9,10 @@ namespace bookshop.Models
         [StringLength(100)]
         public string Title { get; set; }
 
+        [Display(Name = "Year Published")]
         public int? YearPublished { get; set; }
+
+        [Display(Name = "Number of Pages")]
         public int? NumPages { get; set; }
 
         public string? Description { get; set; }
@@ -17,7 +20,10 @@ namespace bookshop.Models
         [StringLength(50)]
         public string? Publisher { get; set; }
 
+        [Display(Name = "Front page")]
         public string? FrontPage { get; set; }
+
+        [Display(Name = "Download URL")]
         public string? DownloadUrl { get; set; }
 
         public int AuthorId { get; set; }

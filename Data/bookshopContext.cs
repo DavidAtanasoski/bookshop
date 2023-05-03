@@ -32,11 +32,13 @@ namespace bookshop.Data
                 .HasOne<Book>(b => b.Book)
                 .WithMany(b => b.Genres)
                 .HasForeignKey(b => b.BookId);
+                //.OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<BookGenre>()
                 .HasOne<Genre>(b => b.Genre)
                 .WithMany(b => b.Books)
                 .HasForeignKey(b => b.GenreId);
+                //.OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Book>()
                 .HasOne<Author>(b => b.Author)

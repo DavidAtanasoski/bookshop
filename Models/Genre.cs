@@ -7,6 +7,7 @@ namespace bookshop.Models
         public int Id { get; set; }
 
         [StringLength(50)]
+        [Display(Name = "Genre")]
         public string GenreName { get; set; }
 
         public ICollection<BookGenre>? Books { get; set; }

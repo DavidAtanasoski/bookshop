@@ -166,12 +166,19 @@ namespace bookshop.Controllers
             {
                 return Problem("Entity set 'bookshopContext.Genre'  is null.");
             }
+
+            var bookGenres = await _context.BookGenre.Where(bg => bg.BookId == id).ToListAsync();
+
+            // Remove the records from the context
+            _context.BookGenre.RemoveRange(bookGenres);
+
+
             var genre = await _context.Genre.FindAsync(id);
             if (genre != null)
             {
                 _context.Genre.Remove(genre);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
