@@ -76,8 +76,19 @@ namespace bookshop.Controllers
         // GET: Books/Create
         public IActionResult Create()
         {
+            var genres = _context.Genre.ToList();
+            var viewModel = new BookCreateViewModel
+            {
+                Book = new Book(),
+                GenreList = genres.Select(g => new SelectListItem
+                {
+                    Value = g.Id.ToString(),
+                    Text = g.GenreName
+                })
+            };
+
             ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FullName");
-            return View();
+            return View(viewModel);
         }
 
         // POST: Books/Create
@@ -91,10 +102,29 @@ namespace bookshop.Controllers
             {
                 _context.Add(viewModel.Book);
                 await _context.SaveChangesAsync();
+
+                if (viewModel.SelectedGenres != null)
+                {
+                    foreach (var genreId in viewModel.SelectedGenres)
+                    {
+                        var bookGenre = new BookGenre { BookId = viewModel.Book.Id, GenreId = genreId };
+                        _context.Add(bookGenre);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
+
                 return RedirectToAction(nameof(Index));
             }
 
             ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FullName", viewModel.Book.AuthorId);
+            viewModel.GenreList = _context.Genre.Select(g => new SelectListItem
+            {
+                Value = g.Id.ToString(),
+                Text = g.GenreName
+            });
+
             return View(viewModel.Book);
         }
 

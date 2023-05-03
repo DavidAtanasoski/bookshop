@@ -61,7 +61,7 @@
                 @{
                     var averageRating = item.Reviews?.Count > 0 ? item.Reviews.Average(r => r.Rating) : 0;
                     <td>
-                        @averageRating
+                        @String.Format("{0:0.00}", averageRating)
                     </td>
                 }
 
