@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using bookshop.Data;
 using bookshop.Models;
+using bookshop.Interfaces;
+using bookshop.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<bookshopContext>(options =>
@@ -9,6 +11,7 @@ builder.Services.AddDbContext<bookshopContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<IStreamFileUploadService, StreamFileUploadLocalService>();
 
 var app = builder.Build();
 

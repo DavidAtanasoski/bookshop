@@ -10,16 +10,20 @@ using bookshop.Models;
 using bookshop.ViewModels;
 using System.Collections;
 using static System.Reflection.Metadata.BlobBuilder;
+using Microsoft.AspNetCore.Hosting;
+using System.Web;
 
 namespace bookshop.Controllers
 {
     public class BooksController : Controller
     {
         private readonly bookshopContext _context;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
-        public BooksController(bookshopContext context)
+        public BooksController(bookshopContext context, IWebHostEnvironment hostEnvironment)
         {
             _context = context;
+            webHostEnvironment = hostEnvironment;
         }
 
         // GET: Books
@@ -82,7 +86,7 @@ namespace bookshop.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(BookCreateViewModel viewModel)
-        {
+        { 
             if (ModelState.IsValid)
             {
                 _context.Add(viewModel.Book);
@@ -217,7 +221,99 @@ namespace bookshop.Controllers
 
         private bool BookExists(int id)
         {
-          return (_context.Book?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Book?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        public async Task<IActionResult> AddPicture(int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var book = _context.Book
+                .Include(x => x.Author)
+                .Where(x => x.Id == id).First();
+
+            if(book == null)
+            {
+                return NotFound();
+            }
+
+            CoverViewModel viewmodel = new CoverViewModel
+            {
+                Book = book,
+                CoverPhotoName = book.FrontPage
+            };
+
+            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FullName", viewmodel.Book.AuthorId);
+            return View(viewmodel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddPicture(int id, CoverViewModel viewmodel)
+        {
+            if(id != viewmodel.Book.Id)
+            {
+                return NotFound();
+            }
+
+            if(ModelState.IsValid)
+            {
+                try
+                {
+                    if(viewmodel.CoverPhoto != null)
+                    {
+                        string uniqueFileName = UploadedFile(viewmodel);
+                        viewmodel.Book.FrontPage = uniqueFileName;
+                    }
+                    else
+                    {
+                        viewmodel.Book.FrontPage = viewmodel.CoverPhotoName;
+                    }
+
+                    _context.Update(viewmodel.Book);
+                    await _context.SaveChangesAsync();
+                }
+                catch(DbUpdateConcurrencyException)
+                {
+                    if(!BookExists(viewmodel.Book.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Details", new { id = viewmodel.Book.Id });
+            }
+
+            return View(viewmodel);
+        }
+
+        private string UploadedFile(CoverViewModel viewmodel)
+        {
+            string uniqueFileName = null;
+
+            if(viewmodel.CoverPhoto != null)
+            {
+                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Pictures");
+                if(!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(viewmodel.CoverPhoto.FileName);
+                string fileNameWithPath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
+                {
+                    viewmodel.CoverPhoto.CopyTo(stream);
+                }
+            }
+            return uniqueFileName;
         }
     }
 }
