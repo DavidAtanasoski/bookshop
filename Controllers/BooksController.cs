@@ -239,6 +239,11 @@ namespace bookshop.Controllers
             {
                 return Problem("Entity set 'bookshopContext.Book'  is null.");
             }
+
+            var bookGenres = await _context.BookGenre.Where(bg => bg.BookId == id).ToListAsync();
+            _context.BookGenre.RemoveRange(bookGenres);
+
+
             var book = await _context.Book.FindAsync(id);
             if (book != null)
             {
