@@ -77,7 +77,8 @@ namespace bookshop.Models
                         NumPages = 123,
                         Description = "this is a description",
                         Publisher = "london house",
-                        FrontPage = "this is a front page",
+                        FrontPage = "/images/art_of_war.jpg",
+                        //FrontPage = "this is a front page",
                         DownloadUrl = "no download url",
                         AuthorId = context.Author.Single(d => d.FirstName == "Lao" && d.LastName == "Tzu").Id
                     },
@@ -88,7 +89,8 @@ namespace bookshop.Models
                         NumPages = 654,
                         Description = "So Melville wrote of his masterpiece, one of the greatest works of imagination in literary history. In part, Moby-Dick is the story of an eerily compelling madman pursuing an unholy war against a creature as vast and dangerous and unknowable as the sea itself. But more than just a novel of adventure, more than an encyclopaedia of whaling lore and legend, the book can be seen as part of its author's lifelong meditation on America. Written with wonderfully redemptive humour, Moby-Dick is also a profound inquiry into character, faith, and the nature of perception.",
                         Publisher = "Penguin Classics",
-                        FrontPage = "this is a front page",
+                        FrontPage = "/images/moby_dick.jpg",
+                        //FrontPage = "this is a front page",
                         DownloadUrl = "no download url",
                         AuthorId = context.Author.Single(d => d.FirstName == "Herman" && d.LastName == "Melville").Id
                     },
@@ -99,7 +101,8 @@ namespace bookshop.Models
                         NumPages = 279,
                         Description = "Since its immediate success in 1813, Pride and Prejudice has remained one of the most popular novels in the English language. Jane Austen called this brilliant work \"her own darling child\" and its vivacious heroine, Elizabeth Bennet, \"as delightful a creature as ever appeared in print.\" The romantic clash between the opinionated Elizabeth and her proud beau, Mr. Darcy, is a splendid performance of civilized sparring. And Jane Austen's radiant wit sparkles as her characters dance a delicate quadrille of flirtation and intrigue, making this book the most superb comedy of manners of Regency England.",
                         Publisher = "Modern Library",
-                        FrontPage = "this is a front page",
+                        FrontPage = "/images/pride_prejudice.jpg",
+                        //FrontPage = "this is a front page",
                         DownloadUrl = "no download url",
                         AuthorId = context.Author.Single(d => d.FirstName == "Jane" && d.LastName == "Austen").Id
                     },
@@ -110,7 +113,8 @@ namespace bookshop.Models
                         NumPages = 671,
                         Description = "Raskolnikov, a destitute and desperate former student, wanders through the slums of St Petersburg and commits a random murder without remorse or regret. He imagines himself to be a great man, a Napoleon: acting for a higher purpose beyond conventional moral law. But as he embarks on a dangerous game of cat and mouse with a suspicious police investigator, Raskolnikov is pursued by the growing voice of his conscience and finds the noose of his own guilt tightening around his neck. Only Sonya, a downtrodden sex worker, can offer the chance of redemption.",
                         Publisher = "Penguin",
-                        FrontPage = "this is a front page",
+                        FrontPage = "/images/crime_punishment.jpg",
+                        //FrontPage = "this is a front page",
                         DownloadUrl = "no download url",
                         AuthorId = context.Author.Single(d => d.FirstName == "Fyodor" && d.LastName == "Dostoevsky").Id
                     },
@@ -121,7 +125,8 @@ namespace bookshop.Models
                         NumPages = 216,
                         Description = "Seconds before the Earth is demolished to make way for a galactic freeway, Arthur Dent is plucked off the planet by his friend Ford Prefect, a researcher for the revised edition of The Hitchhiker's Guide to the Galaxy who, for the last fifteen years, has been posing as an out-of-work actor.Together this dynamic pair begin a journey through space aided by quotes from The Hitchhiker's Guide (\"A towel is about the most massively useful thing an interstellar hitchhiker can have\") and a galaxy-full of fellow travelers: Zaphod Beeblebrox--the two-headed, three-armed ex-hippie and totally out-to-lunch president of the galaxy; Trillian, Zaphod's girlfriend (formally Tricia McMillan), whom Arthur tried to pick up at a cocktail party once upon a time zone; Marvin, a paranoid, brilliant, and chronically depressed robot; Veet Voojagig, a former graduate student who is obsessed with the disappearance of all the ballpoint pens he bought over the years.",
                         Publisher = "Del Rey Books",
-                        FrontPage = "this is a front page",
+                        FrontPage = "/images/guide_galaxy.jpg",
+                        //FrontPage = "this is a front page",
                         DownloadUrl = "no download url",
                         AuthorId = context.Author.Single(d => d.FirstName == "Douglas" && d.LastName == "Adams").Id
                     }

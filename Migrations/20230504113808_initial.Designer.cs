@@ -12,7 +12,7 @@ using bookshop.Data;
 namespace bookshop.Migrations
 {
     [DbContext(typeof(bookshopContext))]
-    [Migration("20230503203618_initial")]
+    [Migration("20230504113808_initial")]
     partial class initial
     {
         /// <inheritdoc />

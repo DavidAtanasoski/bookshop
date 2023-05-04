@@ -45,7 +45,15 @@
 @foreach (var item in Model.Books) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.FrontPage)
+                @*@Html.DisplayFor(modelItem => item.FrontPage)*@
+                @if(item.FrontPage != null)
+                {
+                        <img src="@item.FrontPage" height="300px" width="190px" asp-append-version="true" />
+                    }
+                    else
+                    {
+                        <p>Image not found.</p>
+                    }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
