@@ -29,6 +29,6 @@ namespace bookshop.Models
         [StringLength(50)]
         public string? Gender { get; set; }
 
-        public ICollection<Book> Books { get; set; }
+        public ICollection<Book>? Books { get; set; }
     }
 }
