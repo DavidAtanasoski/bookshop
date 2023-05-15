@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using bookshop.Data;
 using bookshop.Models;
 using bookshop.Interfaces;
-using bookshop.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<bookshopContext>(options =>
@@ -11,7 +10,7 @@ builder.Services.AddDbContext<bookshopContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<IStreamFileUploadService, StreamFileUploadLocalService>();
+builder.Services.AddTransient<IBufferedFileUploadService, BufferedFileUploadLocalService>(); 
 
 var app = builder.Build();
 
@@ -38,6 +37,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Books}/{action=Index}/{id?}");
 
 app.Run();

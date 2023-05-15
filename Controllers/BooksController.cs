@@ -12,6 +12,7 @@ using System.Collections;
 using static System.Reflection.Metadata.BlobBuilder;
 using Microsoft.AspNetCore.Hosting;
 using System.Web;
+using bookshop.Interfaces;
 
 namespace bookshop.Controllers
 {
@@ -19,11 +20,17 @@ namespace bookshop.Controllers
     {
         private readonly bookshopContext _context;
         private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly IBufferedFileUploadService _bufferedFileUploadService;
 
-        public BooksController(bookshopContext context, IWebHostEnvironment hostEnvironment)
+        public BooksController(
+            bookshopContext context, 
+            IWebHostEnvironment hostEnvironment,
+            IBufferedFileUploadService bufferedFileUploadService
+            )
         {
             _context = context;
             webHostEnvironment = hostEnvironment;
+            _bufferedFileUploadService = bufferedFileUploadService;
         }
 
         // GET: Books
@@ -97,11 +104,41 @@ namespace bookshop.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(BookCreateViewModel viewModel)
-        { 
+        {
             if (ModelState.IsValid)
             {
                 _context.Add(viewModel.Book);
                 await _context.SaveChangesAsync();
+
+                if(viewModel.file != null)
+                {
+                    string imagePath = await _bufferedFileUploadService.UploadFile(viewModel.file, "images");
+
+                    if (imagePath != "none")
+                    {
+                        ViewBag.Message = "File Upload Successful!";
+                    }
+                    else
+                    {
+                        ViewBag.Message = "File Upload Failed!";
+                    }
+                    viewModel.Book.FrontPage = "/images/" + imagePath;
+                }
+
+                if(viewModel.fileBook != null)
+                {
+                    string bookPath = await _bufferedFileUploadService.UploadFile(viewModel.fileBook, "books");
+
+                    if(bookPath != "none")
+                    {
+                        ViewBag.Message = "File Upload Successful!";
+                    }
+                    else
+                    {
+                        ViewBag.Message = "File Upload Failed!";
+                    }
+                    viewModel.Book.DownloadUrl = "/books/" + bookPath;
+                }
 
                 if (viewModel.SelectedGenres != null)
                 {
@@ -113,8 +150,6 @@ namespace bookshop.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-
-
                 return RedirectToAction(nameof(Index));
             }
 
@@ -259,96 +294,23 @@ namespace bookshop.Controllers
             return (_context.Book?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        public async Task<IActionResult> AddPicture(int? id)
-        {
-            if(id == null)
-            {
-                return NotFound();
-            }
+        //private string UploadImage(BookCreateViewModel model)
+        //{
+        //    string uniqueFilename = null;
 
-            var book = _context.Book
-                .Include(x => x.Author)
-                .Where(x => x.Id == id).First();
+        //    if(model.FrontPagee != null)
+        //    {
+        //        string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
+        //        uniqueFilename = Guid.NewGuid().ToString() + "_" + model.FrontPagee.FileName;
+        //        string filePath = Path.Combine(uploadsFolder, uniqueFilename);
 
-            if(book == null)
-            {
-                return NotFound();
-            }
+        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
+        //        {
+        //            model.FrontPagee.CopyTo(fileStream);
+        //        }
+        //    }
 
-            CoverViewModel viewmodel = new CoverViewModel
-            {
-                Book = book,
-                CoverPhotoName = book.FrontPage
-            };
-
-            ViewData["AuthorId"] = new SelectList(_context.Author, "Id", "FullName", viewmodel.Book.AuthorId);
-            return View(viewmodel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddPicture(int id, CoverViewModel viewmodel)
-        {
-            if(id != viewmodel.Book.Id)
-            {
-                return NotFound();
-            }
-
-            if(ModelState.IsValid)
-            {
-                try
-                {
-                    if(viewmodel.CoverPhoto != null)
-                    {
-                        string uniqueFileName = UploadedFile(viewmodel);
-                        viewmodel.Book.FrontPage = uniqueFileName;
-                    }
-                    else
-                    {
-                        viewmodel.Book.FrontPage = viewmodel.CoverPhotoName;
-                    }
-
-                    _context.Update(viewmodel.Book);
-                    await _context.SaveChangesAsync();
-                }
-                catch(DbUpdateConcurrencyException)
-                {
-                    if(!BookExists(viewmodel.Book.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Details", new { id = viewmodel.Book.Id });
-            }
-
-            return View(viewmodel);
-        }
-
-        private string UploadedFile(CoverViewModel viewmodel)
-        {
-            string uniqueFileName = null;
-
-            if(viewmodel.CoverPhoto != null)
-            {
-                string uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Pictures");
-                if(!Directory.Exists(uploadsFolder))
-                {
-                    Directory.CreateDirectory(uploadsFolder);
-                }
-
-                uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(viewmodel.CoverPhoto.FileName);
-                string fileNameWithPath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                using (var stream = new FileStream(fileNameWithPath, FileMode.Create))
-                {
-                    viewmodel.CoverPhoto.CopyTo(stream);
-                }
-            }
-            return uniqueFileName;
-        }
+        //    return uniqueFilename;
+        //}
     }
 }
