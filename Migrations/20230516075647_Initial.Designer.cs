@@ -11,9 +11,9 @@ using bookshop.Data;
 
 namespace bookshop.Migrations
 {
-    [DbContext(typeof(bookshopContext))]
-    [Migration("20230504113808_initial")]
-    partial class initial
+    [DbContext(typeof(BookshopContext))]
+    [Migration("20230516075647_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

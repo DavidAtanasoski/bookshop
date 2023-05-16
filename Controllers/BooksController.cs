@@ -18,12 +18,12 @@ namespace bookshop.Controllers
 {
     public class BooksController : Controller
     {
-        private readonly bookshopContext _context;
+        private readonly BookshopContext _context;
         private readonly IWebHostEnvironment webHostEnvironment;
         private readonly IBufferedFileUploadService _bufferedFileUploadService;
 
         public BooksController(
-            bookshopContext context, 
+            BookshopContext context, 
             IWebHostEnvironment hostEnvironment,
             IBufferedFileUploadService bufferedFileUploadService
             )

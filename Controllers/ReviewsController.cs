@@ -12,9 +12,9 @@ namespace bookshop.Controllers
 {
     public class ReviewsController : Controller
     {
-        private readonly bookshopContext _context;
+        private readonly BookshopContext _context;
 
-        public ReviewsController(bookshopContext context)
+        public ReviewsController(BookshopContext context)
         {
             _context = context;
         }

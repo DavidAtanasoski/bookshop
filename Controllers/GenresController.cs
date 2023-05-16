@@ -13,9 +13,9 @@ namespace bookshop.Controllers
 {
     public class GenresController : Controller
     {
-        private readonly bookshopContext _context;
+        private readonly BookshopContext _context;
 
-        public GenresController(bookshopContext context)
+        public GenresController(BookshopContext context)
         {
             _context = context;
         }

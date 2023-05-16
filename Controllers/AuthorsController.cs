@@ -14,9 +14,9 @@ namespace bookshop.Controllers
 {
     public class AuthorsController : Controller
     {
-        private readonly bookshopContext _context;
+        private readonly BookshopContext _context;
 
-        public AuthorsController(bookshopContext context)
+        public AuthorsController(BookshopContext context)
         {
             _context = context;
         }

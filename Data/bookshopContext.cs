@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using bookshop.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using bookshop.Areas.Identity.Data;
 
 namespace bookshop.Data
 {
-    public class bookshopContext : DbContext
+    public class BookshopContext : IdentityDbContext<bookshopUser>
     {
-        public bookshopContext (DbContextOptions<bookshopContext> options)
+        public BookshopContext (DbContextOptions<BookshopContext> options)
             : base(options)
         {
         }
@@ -26,35 +24,40 @@ namespace bookshop.Data
 
         public DbSet<bookshop.Models.UserBooks> UserBooks { get; set; } = default!;
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-            modelBuilder.Entity<BookGenre>()
-                .HasOne<Book>(b => b.Book)
-                .WithMany(b => b.Genres)
-                .HasForeignKey(b => b.BookId);
-                //.OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<BookGenre>()
-                .HasOne<Genre>(b => b.Genre)
-                .WithMany(b => b.Books)
-                .HasForeignKey(b => b.GenreId);
-                //.OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Book>()
-                .HasOne<Author>(b => b.Author)
-                .WithMany(b => b.Books)
-                .HasForeignKey(b => b.AuthorId);
-
-            modelBuilder.Entity<Book>()
-                .HasMany(b => b.Reviews)
-                .WithOne(b => b.Book)
-                .HasForeignKey(b => b.BookId);
-
-            modelBuilder.Entity<Book>()
-                .HasMany(b => b.UserBks)
-                .WithOne(b => b.Book)
-                .HasForeignKey(b => b.BookId);
-
+            base.OnModelCreating(builder);
         }
+
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<BookGenre>()
+        //        .HasOne<Book>(b => b.Book)
+        //        .WithMany(b => b.Genres)
+        //        .HasForeignKey(b => b.BookId);
+        //    //.OnDelete(DeleteBehavior.Cascade);
+
+        //    modelBuilder.Entity<BookGenre>()
+        //        .HasOne<Genre>(b => b.Genre)
+        //        .WithMany(b => b.Books)
+        //        .HasForeignKey(b => b.GenreId);
+        //    //.OnDelete(DeleteBehavior.Cascade);
+
+        //    modelBuilder.Entity<Book>()
+        //        .HasOne<Author>(b => b.Author)
+        //        .WithMany(b => b.Books)
+        //        .HasForeignKey(b => b.AuthorId);
+
+        //    modelBuilder.Entity<Book>()
+        //        .HasMany(b => b.Reviews)
+        //        .WithOne(b => b.Book)
+        //        .HasForeignKey(b => b.BookId);
+
+        //    modelBuilder.Entity<Book>()
+        //        .HasMany(b => b.UserBks)
+        //        .WithOne(b => b.Book)
+        //        .HasForeignKey(b => b.BookId);
+
+        //}
     }
 }
