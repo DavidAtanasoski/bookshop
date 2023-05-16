@@ -116,10 +116,6 @@ namespace bookshop
             builder.Services.AddDbContext<BookshopContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("bookshopContext") ?? throw new InvalidOperationException("Connection string 'WorkshopImprovedContext' not found.")));
 
-
-            //  builder.Services.AddRazorPages();   
-            // builder.Services.AddDefaultIdentity<WorkshopImprovedUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<WorkshopImprovedContext>();
-
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -128,12 +124,8 @@ namespace bookshop
             });
 
             builder.Services.AddRazorPages();
-
             builder.Services.AddIdentity<bookshopUser, IdentityRole>().AddEntityFrameworkStores<BookshopContext>().AddDefaultUI().AddDefaultTokenProviders();
-
-
             builder.Services.AddHttpContextAccessor();
-
 
             // Add services to the container.
             builder.Services.AddControllersWithViews().AddRazorPagesOptions(options =>
@@ -171,7 +163,6 @@ namespace bookshop
                 options.SlidingExpiration = true;
             });
 
-
             builder.Services.AddTransient<IBufferedFileUploadService, BufferedFileUploadLocalService>();
             
             var app = builder.Build();
@@ -183,8 +174,6 @@ namespace bookshop
                 // SeedData.CreateRolesAndAdminUser(services);
             }
 
-
-
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
             {
@@ -195,10 +184,8 @@ namespace bookshop
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            //app.UseCors();
             app.UseRouting();
-            app.UseAuthentication(); ;
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
@@ -206,8 +193,6 @@ namespace bookshop
                 pattern: "{controller=Books}/{action=Index}/{id?}");
 
             app.MapRazorPages();
-            // app.UseAuthentication();;
-
             app.Run();
         }
     }
