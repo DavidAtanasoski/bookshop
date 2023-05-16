@@ -12,7 +12,7 @@ using bookshop.Data;
 namespace bookshop.Migrations
 {
     [DbContext(typeof(BookshopContext))]
-    [Migration("20230516102226_IdentityAdded")]
+    [Migration("20230516192254_IdentityAdded")]
     partial class IdentityAdded
     {
         /// <inheritdoc />

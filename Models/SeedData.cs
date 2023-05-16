@@ -26,6 +26,21 @@ namespace bookshop.Models
                 //Add default User to Role Admin
                 if (chkUser.Succeeded) { var result1 = await UserManager.AddToRoleAsync(User, "Admin"); }
             }
+
+            var roleCheck1 = await RoleManager.RoleExistsAsync("User");
+            if (!roleCheck1) { roleResult = await RoleManager.CreateAsync(new IdentityRole("User")); }
+            bookshopUser user1 = await UserManager.FindByEmailAsync("david@david.com");
+            if (user1 == null)
+            {
+                var User = new bookshopUser();
+                User.Email = "david@david.com";
+                User.UserName = "david@david.com";
+                string userPWD = "David123";
+                IdentityResult chkUser = await UserManager.CreateAsync(User, userPWD);
+                //Add default User to Role Admin
+                if (chkUser.Succeeded) { await UserManager.AddToRoleAsync(User, "User"); }
+
+            }
         }
 
         public static void Initialize(IServiceProvider serviceProvider)

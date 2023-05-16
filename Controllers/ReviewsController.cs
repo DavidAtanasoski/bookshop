@@ -48,7 +48,13 @@ namespace bookshop.Controllers
         // GET: Reviews/Create
         public IActionResult Create()
         {
-            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Title");
+            var loggedUser = User.Identity.Name;
+
+            var books = _context.Book
+                .Where(b => b.UserBks.Any(ub => ub.AppUser == loggedUser))
+                .ToList();
+
+            ViewData["BookId"] = new SelectList(books, "Id", "Title");
             return View();
         }
 
@@ -61,11 +67,14 @@ namespace bookshop.Controllers
         {
             if (ModelState.IsValid)
             {
+                review.AppUser = User.Identity.Name;
+
                 _context.Add(review);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", review.BookId);
+
+            //ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", review.BookId);
             return View(review);
         }
 

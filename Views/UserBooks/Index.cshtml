@@ -1,4 +1,9 @@
 ﻿@model IEnumerable<bookshop.Models.UserBooks>
+@using Microsoft.AspNetCore.Identity
+@using bookshop.Areas.Identity.Data
+
+@inject SignInManager<bookshopUser> SignInManager
+@inject UserManager<bookshopUser> UserManager
 
 @{
     ViewData["Title"] = "Index";
@@ -12,9 +17,9 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
+@*            <th>
                 @Html.DisplayNameFor(model => model.AppUser)
-            </th>
+            </th>*@
             <th>
                 @Html.DisplayNameFor(model => model.Book)
             </th>
@@ -23,19 +28,31 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppUser)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Book.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
+            @if (item.AppUser == UserManager.GetUserName(User))
+            {
+                <tr>
+@*                    <td>
+                        @UserManager.GetUserName(User);
+                    </td>*@
+
+                    <td>
+                        <a asp-action="Details" asp-controller="Books" asp-route-id="@item.BookId"> @Html.DisplayFor(modelItem => item.Book.Title) </a>
+                    </td>
+
+                    <td>
+
+                        <form a asp-action="GetPdf" asp-controller="Books">
+                            <input name="url" type="hidden" value="@item.Book.DownloadUrl">
+                            <input type="submit" value="Download pdf">
+                        </form>
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
 }
     </tbody>
 </table>

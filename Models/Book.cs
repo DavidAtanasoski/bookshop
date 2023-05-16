@@ -26,6 +26,7 @@ namespace bookshop.Models
         [Display(Name = "Download URL")]
         public string? DownloadUrl { get; set; }
 
+        [Display(Name = "Author")]
         public int AuthorId { get; set; }
         public Author? Author { get; set; }
 

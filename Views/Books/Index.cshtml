@@ -41,6 +41,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.Books[0].Genres)
             </th>
+            <th>
+                @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin")))
+                {
+                    @Html.DisplayNameFor(model => model.Books[0].DownloadUrl)
+                }
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -92,6 +98,15 @@
                         <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     }
             </td>
+                <td>
+                    @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin")))
+                    {
+                        <form a asp-action="GetPdf" asp-controller="Books">
+                            <input name="url" type="hidden" value="@item.DownloadUrl">
+                            <input type="submit" value="Download pdf">
+                        </form>
+                    }
+                </td>
         </tr>
 }
     </tbody>

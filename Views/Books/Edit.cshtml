@@ -38,6 +38,15 @@
                 <span asp-validation-for="Book.Publisher" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label class="control-label">Select cover:</label>
+                <input type="file" name="file" />
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Select book:</label>
+                <input type="file" name="fileBook" />
+            </div>
+@*            <div class="form-group">
                 <label asp-for="Book.FrontPage" class="control-label"></label>
                 <input asp-for="Book.FrontPage" class="form-control" />
                 <span asp-validation-for="Book.FrontPage" class="text-danger"></span>
@@ -46,7 +55,7 @@
                 <label asp-for="Book.DownloadUrl" class="control-label"></label>
                 <input asp-for="Book.DownloadUrl" class="form-control" />
                 <span asp-validation-for="Book.DownloadUrl" class="text-danger"></span>
-            </div>
+            </div>*@
             <div class="form-group">
                 <label asp-for="Book.AuthorId" class="control-label"></label>
                 <select asp-for="Book.AuthorId" class="form-control" asp-items="ViewBag.AuthorId">

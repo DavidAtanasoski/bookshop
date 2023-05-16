@@ -7,14 +7,15 @@ namespace bookshop.Models
     {
         public int Id { get; set; }
 
+        [Display(Name ="Book")]
         public int BookId { get; set; }
         public Book? Book { get; set; }
 
-        [Required]
         [StringLength(450)]
         [Display(Name = "Username")]
-        public string AppUser { get; set; }
+        public string? AppUser { get; set; }
 
+        [Required]
         [StringLength(500)]
         public string Comment { get; set; }
 

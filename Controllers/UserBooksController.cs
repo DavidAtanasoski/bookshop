@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using bookshop.Data;
 using bookshop.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace bookshop.Controllers
 {
@@ -20,6 +22,7 @@ namespace bookshop.Controllers
         }
 
         // GET: UserBooks
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Index()
         {
             var bookshopContext = _context.UserBooks.Include(u => u.Book);
@@ -27,6 +30,7 @@ namespace bookshop.Controllers
         }
 
         // GET: UserBooks/Details/5
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.UserBooks == null)
@@ -46,9 +50,10 @@ namespace bookshop.Controllers
         }
 
         // GET: UserBooks/Create
+        [Authorize(Roles = "User")]
         public IActionResult Create()
         {
-            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id");
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Title");
             return View();
         }
 
@@ -57,6 +62,7 @@ namespace bookshop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Create([Bind("Id,AppUser,BookId")] UserBooks userBooks)
         {
             if (ModelState.IsValid)
@@ -65,11 +71,12 @@ namespace bookshop.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", userBooks.BookId);
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Title", userBooks.Book.Title);
             return View(userBooks);
         }
 
         // GET: UserBooks/Edit/5
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.UserBooks == null)
@@ -82,7 +89,7 @@ namespace bookshop.Controllers
             {
                 return NotFound();
             }
-            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Id", userBooks.BookId);
+            ViewData["BookId"] = new SelectList(_context.Book, "Id", "Title", userBooks.Book.Title);
             return View(userBooks);
         }
 
@@ -91,6 +98,7 @@ namespace bookshop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,AppUser,BookId")] UserBooks userBooks)
         {
             if (id != userBooks.Id)
@@ -123,6 +131,7 @@ namespace bookshop.Controllers
         }
 
         // GET: UserBooks/Delete/5
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.UserBooks == null)
@@ -163,6 +172,20 @@ namespace bookshop.Controllers
         private bool UserBooksExists(int id)
         {
           return (_context.UserBooks?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        public async Task<IActionResult> GetPdf(string url)
+        {
+            var path = Path.Combine(
+            Directory.GetCurrentDirectory(), "wwwroot/" + url);
+
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(path, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return File(memory, "application/pdf", "Demo.pdf");
         }
     }
 }

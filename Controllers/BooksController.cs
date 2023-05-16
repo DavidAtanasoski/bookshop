@@ -303,7 +303,7 @@ namespace bookshop.Controllers
         public async Task<IActionResult> GetPdf(string url)
         {
             var path = Path.Combine(
-            Directory.GetCurrentDirectory(), "wwwroot/pdfs/" + url);
+            Directory.GetCurrentDirectory(), "wwwroot/" + url);
 
             var memory = new MemoryStream();
             using (var stream = new FileStream(path, FileMode.Open))

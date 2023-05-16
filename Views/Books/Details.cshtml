@@ -46,12 +46,22 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Publisher)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DownloadUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DownloadUrl)
+        @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("User")))
+        {
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.DownloadUrl)
+            </dt>
+        }
+        @if (User.Identity.IsAuthenticated && (User.IsInRole("Admin") || User.IsInRole("User")))
+        {
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.DownloadUrl)
+@*            <form a asp-action="GetPdf" asp-controller="Books">
+                <input name="url" type="hidden" value="@Html.DisplayFor(model => model.DownloadUrl)">
+                <input type="submit" value="Download pdf">
+            </form>*@
         </dd>
+        }
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Author)
         </dt>
