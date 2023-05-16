@@ -13,6 +13,7 @@ using static System.Reflection.Metadata.BlobBuilder;
 using Microsoft.AspNetCore.Hosting;
 using System.Web;
 using bookshop.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace bookshop.Controllers
 {
@@ -81,6 +82,7 @@ namespace bookshop.Controllers
         }
 
         // GET: Books/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             var genres = _context.Genre.ToList();
@@ -103,6 +105,7 @@ namespace bookshop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(BookCreateViewModel viewModel)
         {
             if (ModelState.IsValid)
@@ -164,6 +167,7 @@ namespace bookshop.Controllers
         }
 
         // GET: Books/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Book == null)
@@ -197,6 +201,7 @@ namespace bookshop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, BooksEditViewModel viewModel)
         {
             if (id != viewModel.Book?.Id)
@@ -247,6 +252,7 @@ namespace bookshop.Controllers
         }
 
         // GET: Books/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Book == null)
@@ -294,23 +300,18 @@ namespace bookshop.Controllers
             return (_context.Book?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        //private string UploadImage(BookCreateViewModel model)
-        //{
-        //    string uniqueFilename = null;
+        public async Task<IActionResult> GetPdf(string url)
+        {
+            var path = Path.Combine(
+            Directory.GetCurrentDirectory(), "wwwroot/pdfs/" + url);
 
-        //    if(model.FrontPagee != null)
-        //    {
-        //        string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
-        //        uniqueFilename = Guid.NewGuid().ToString() + "_" + model.FrontPagee.FileName;
-        //        string filePath = Path.Combine(uploadsFolder, uniqueFilename);
-
-        //        using (var fileStream = new FileStream(filePath, FileMode.Create))
-        //        {
-        //            model.FrontPagee.CopyTo(fileStream);
-        //        }
-        //    }
-
-        //    return uniqueFilename;
-        //}
+            var memory = new MemoryStream();
+            using (var stream = new FileStream(path, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+            return File(memory, "application/pdf", "Demo.pdf");
+        }
     }
 }

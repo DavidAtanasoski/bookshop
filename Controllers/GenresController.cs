@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using bookshop.Data;
 using bookshop.Models;
 using bookshop.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
 
 namespace bookshop.Controllers
 {
@@ -67,6 +69,7 @@ namespace bookshop.Controllers
         }
 
         // GET: Genres/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -77,6 +80,7 @@ namespace bookshop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(GenreCreateViewModel viewModel) //[Bind("Id,GenreName")] Genre genre
         {
             if (ModelState.IsValid)
@@ -89,6 +93,7 @@ namespace bookshop.Controllers
         }
 
         // GET: Genres/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Genre == null)
@@ -109,6 +114,7 @@ namespace bookshop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,GenreName")] Genre genre)
         {
             if (id != genre.Id)
@@ -140,6 +146,7 @@ namespace bookshop.Controllers
         }
 
         // GET: Genres/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Genre == null)
